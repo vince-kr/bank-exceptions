@@ -1,18 +1,20 @@
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
-        BankingApp bankApp = new BankingApp();
-        Scanner userInput = new Scanner(System.in);
+        BankingApp bankApp = new BankingApp(new BankAccount());
 
-        System.out.println(bankApp.getMenu());
-        try {
-            int userChoice = userInput.nextInt();
-            System.out.println(userChoice);
-        }
-        catch (InputMismatchException im) {
-            System.out.println("Enter a number, you fool");
-        }
+        System.out.println("""
+                ============================
+                === WELCOME TO BANK APP! ===
+                ============================
+                
+                """);
+
+        do {
+            String[] menu = bankApp.getMenu();
+            for (int i=0; i < menu.length; i++) {
+                System.out.println((i+1) + ".  " + menu[i]);
+            }
+            bankApp.makeChoice();
+        } while (!bankApp.userIsFinished());
     }
 }
