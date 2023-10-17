@@ -3,7 +3,8 @@ import java.util.Scanner;
 
 class BankingApp {
     private boolean userIsFinished;
-    BankAccount account;
+    private final BankAccount account;
+    private final Scanner userInput = new Scanner(System.in);
 
     public BankingApp(BankAccount account) {
         this.account = account;
@@ -21,27 +22,20 @@ class BankingApp {
     }
 
     public void makeChoice() {
-        String menuChoice = getMenuChoice(new Scanner(System.in));
+        String menuChoice = getMenuChoice(userInput);
         String keepBanking = "Wanna do anything else?";
 
         switch (menuChoice) {
             case "Deposit" -> {
-                double depositAmount = getValidDepositAmount(new Scanner(System.in));
-                account.deposit(depositAmount);
+                double depositAmount = getValidAmount();
+                double newBalance = account.deposit(depositAmount);
+                System.out.println("Deposit successful. Your new balance is: " + newBalance);
                 System.out.println(keepBanking);
             }
             case "Withdraw" -> {
-                System.out.println("We're doing withdrawing, after checking you're not withdrawing too much!");
-                double withdrawAmount = getValidWithdrawAmount(new Scanner(System.in));
-                while (true) {
-                    try {
-                        account.withdraw(withdrawAmount);
-                        break;
-                    } catch (InsufficientFundsException inF) {
-                        System.out.println(inF);
-                        withdrawAmount = getValidWithdrawAmount(new Scanner(System.in));
-                    }
-                }
+                double withdrawAmount = getValidAmount();
+                double newBalance = validWithdrawal(withdrawAmount);
+                System.out.println("Withdrawal successful. Your new balance is: " + newBalance);
                 System.out.println(keepBanking);
             }
             case "Check balance" -> {
@@ -78,17 +72,17 @@ class BankingApp {
         return menuChoice;
     }
 
-    private double getValidDepositAmount(Scanner userInput) {
-        double depositAmount;
-        String prompt = "Please enter the amount to deposit: ";
+    private double getValidAmount() {
+        double amount;
+        String prompt = "Please enter the amount: ";
 
         System.out.print(prompt);
 
         while (true) {
             try {
-               depositAmount = userInput.nextDouble();
-               if (depositAmount <= 0) {
-                   System.out.println("Deposit must be greater than zero.");
+               amount = userInput.nextDouble();
+               if (amount <= 0) {
+                   System.out.println("Amount must be greater than zero.");
                    userInput.nextLine();
                    System.out.print(prompt);
                    continue;
@@ -102,41 +96,26 @@ class BankingApp {
             }
         }
 
-        return depositAmount;
+        return amount;
     }
 
-    private double getValidWithdrawAmount(Scanner userInput) {
-        double withdrawAmount;
-        String prompt = "Please enter the amount to withdraw: ";
-
-        System.out.print(prompt);
-
+    private double validWithdrawal(double amount) {
+        double newBalance;
         while (true) {
             try {
-                withdrawAmount = userInput.nextDouble();
-                if (withdrawAmount <= 0) {
-                    System.out.println("Withdrawal amount must be greater than zero.");
-                    userInput.nextLine();
-                    System.out.print(prompt);
-                    continue;
-                }
+                newBalance = account.withdraw(amount);
                 break;
-            }
-            catch (InputMismatchException im) {
-                System.out.println("That is not a valid number. Please try again.");
-                userInput.nextLine();
-                System.out.print(prompt);
+            } catch (InsufficientFundsException inF) {
+                System.out.println(inF);
+                amount = getValidAmount();
             }
         }
-
-        return withdrawAmount;
+        return newBalance;
     }
 
     private double getBalance() {
         return account.getBalance();
     }
-
-
 
     public boolean userIsFinished() {
         return userIsFinished;
