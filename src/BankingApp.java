@@ -1,8 +1,8 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class BankingApp {
-    boolean userIsFinished;
+class BankingApp {
+    private boolean userIsFinished;
     BankAccount account;
 
     public BankingApp(BankAccount account) {
