@@ -22,18 +22,21 @@ class BankingApp {
 
     public void makeChoice() {
         String menuChoice = getMenuChoice(new Scanner(System.in));
+        String keepBanking = "Wanna do anything else?";
+
         switch (menuChoice) {
             case "Deposit" -> {
-                System.out.println("We're doing depositing!");
-                System.out.println("Wanna do anything else?");
+                double depositAmount = getValidDepositAmount(new Scanner(System.in));
+                account.deposit(depositAmount);
+                System.out.println(keepBanking);
             }
             case "Withdraw" -> {
                 System.out.println("We're doing withdrawing, after checking you're not withdrawing too much!");
-                System.out.println("Wanna do anything else?");
+                System.out.println(keepBanking);
             }
             case "Check balance" -> {
                 System.out.println("We're telling you your balance!");
-                System.out.println("Wanna do anything else?");
+                System.out.println(keepBanking);
             }
             case "Exit" -> {
                 System.out.println("Thank you for banking!");
@@ -53,14 +56,43 @@ class BankingApp {
                     break;
                 } catch (ArrayIndexOutOfBoundsException ib) {
                     System.out.println("That option does not appear in the menu.");
+                    System.out.print("Your choice: ");
                     userInput.nextLine();
                 }
             } catch (InputMismatchException im) {
                 System.out.println("Please enter a NUMBER.");
+                System.out.print("Your choice: ");
                 userInput.nextLine();
             }
         }
         return menuChoice;
+    }
+
+    private double getValidDepositAmount(Scanner userInput) {
+        double depositAmount;
+        String prompt = "Please enter the amount to deposit: ";
+
+        System.out.print(prompt);
+
+        while (true) {
+            try {
+               depositAmount = userInput.nextDouble();
+               if (depositAmount <= 0) {
+                   System.out.println("Deposit must be greater than zero.");
+                   userInput.nextLine();
+                   System.out.print(prompt);
+                   continue;
+               }
+               break;
+            }
+            catch (InputMismatchException im) {
+                System.out.println("That is not a valid number. Please try again.");
+                System.out.print(prompt);
+                userInput.nextLine();
+            }
+        }
+
+        return depositAmount;
     }
 
     public boolean userIsFinished() {

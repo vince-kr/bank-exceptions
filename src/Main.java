@@ -6,7 +6,6 @@ public class Main {
                 ============================
                 === WELCOME TO BANK APP! ===
                 ============================
-                
                 """);
 
         do {
@@ -14,6 +13,7 @@ public class Main {
             for (int i=0; i < menu.length; i++) {
                 System.out.println((i+1) + ".  " + menu[i]);
             }
+            System.out.print("Your choice: ");
             bankApp.makeChoice();
         } while (!bankApp.userIsFinished());
     }
