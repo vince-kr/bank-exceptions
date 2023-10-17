@@ -32,6 +32,16 @@ class BankingApp {
             }
             case "Withdraw" -> {
                 System.out.println("We're doing withdrawing, after checking you're not withdrawing too much!");
+                double withdrawAmount = getValidWithdrawAmount(new Scanner(System.in));
+                while (true) {
+                    try {
+                        account.withdraw(withdrawAmount);
+                        break;
+                    } catch (InsufficientFundsException inF) {
+                        System.out.println(inF);
+                        withdrawAmount = getValidWithdrawAmount(new Scanner(System.in));
+                    }
+                }
                 System.out.println(keepBanking);
             }
             case "Check balance" -> {
@@ -87,12 +97,39 @@ class BankingApp {
             }
             catch (InputMismatchException im) {
                 System.out.println("That is not a valid number. Please try again.");
-                System.out.print(prompt);
                 userInput.nextLine();
+                System.out.print(prompt);
             }
         }
 
         return depositAmount;
+    }
+
+    private double getValidWithdrawAmount(Scanner userInput) {
+        double withdrawAmount;
+        String prompt = "Please enter the amount to withdraw: ";
+
+        System.out.print(prompt);
+
+        while (true) {
+            try {
+                withdrawAmount = userInput.nextDouble();
+                if (withdrawAmount <= 0) {
+                    System.out.println("Withdrawal amount must be greater than zero.");
+                    userInput.nextLine();
+                    System.out.print(prompt);
+                    continue;
+                }
+                break;
+            }
+            catch (InputMismatchException im) {
+                System.out.println("That is not a valid number. Please try again.");
+                userInput.nextLine();
+                System.out.print(prompt);
+            }
+        }
+
+        return withdrawAmount;
     }
 
     private double getBalance() {
