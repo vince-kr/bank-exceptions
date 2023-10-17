@@ -35,7 +35,7 @@ class BankingApp {
                 System.out.println(keepBanking);
             }
             case "Check balance" -> {
-                System.out.println("We're telling you your balance!");
+                System.out.println(getBalance());
                 System.out.println(keepBanking);
             }
             case "Exit" -> {
@@ -94,6 +94,12 @@ class BankingApp {
 
         return depositAmount;
     }
+
+    private double getBalance() {
+        return account.getBalance();
+    }
+
+
 
     public boolean userIsFinished() {
         return userIsFinished;
